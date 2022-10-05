@@ -35,6 +35,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
+double displayHeight(BuildContext context) {
+  return MediaQuery.of(context).size.height;
+}
+
+double displayWidth(BuildContext context) {
+  return MediaQuery.of(context).size.width;
+}
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -56,6 +64,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   static List<String> searchingMsg = [
     "SEARCHING FOR GAME SERVER...",
+    "IN QUEUE: 0 PLAYERS AHEAD OF YOU",
+    "IN QUEUE: 100 PLAYERS AHEAD OF YOU",
+    "IN QUEUE: 300 PLAYERS AHEAD OF YOU",
+    "IN QUEUE: 600 PLAYERS AHEAD OF YOU",
+    "IN QUEUE: 900 PLAYERS AHEAD OF YOU",
+    "IN QUEUE: 1000 PLAYERS AHEAD OF YOU",
     "IN QUEUE: 9000 PLAYERS AHEAD OF YOU",
     "IN QUEUE: 10000 PLAYERS AHEAD OF YOU",
     "IN QUEUE: 20000 PLAYERS AHEAD OF YOU",
@@ -96,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     var cron = new Cron();
     cron.schedule(new Schedule.parse('*/1 * * * *'), () async {
-      print('every one minutes');
+      //print('every one minutes');
       _changeWaitingMsg();
     });
     // This method is rerun every time setState is called, for instance as done
@@ -111,155 +125,383 @@ class _MyHomePageState extends State<MyHomePage> {
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
                 colors: [
-              Color.fromARGB(255, 238, 225, 205),
-              Color.fromARGB(255, 174, 167, 152)
+              Color.fromARGB(255, 255, 232, 189),
+              Color.fromARGB(255, 232, 245, 255),
+              Color.fromARGB(255, 232, 245, 255),
+              Color.fromARGB(255, 232, 245, 255),
+              Color.fromARGB(255, 207, 221, 230),
+              Color.fromARGB(255, 168, 184, 196),
             ])),
         child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Center(
-            // Center is a layout widget. It takes a single child and positions it
-            // in the middle of the parent.
-            child: Column(
-              // Column is also a layout widget. It takes a list of children and
-              // arranges them vertically. By default, it sizes itself to fit its
-              // children horizontally, and tries to be as tall as its parent.
-              //
-              // Invoke "debug painting" (press "p" in the console, choose the
-              // "Toggle Debug Paint" action from the Flutter Inspector in Android
-              // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-              // to see the wireframe for each widget.
-              //
-              // Column has various properties to control how it sizes itself and
-              // how it positions its children. Here we use mainAxisAlignment to
-              // center the children vertically; the main axis here is the vertical
-              // axis because Columns are vertical (the cross axis would be
-              // horizontal).
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(40),
-                      child: Text(
-                        '2.1.0.1 - 105964',
-                        style: GoogleFonts.lato(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                            color: Color.fromARGB(255, 45, 45, 45)),
-                      ),
-                    )
-                  ],
+            backgroundColor: Colors.transparent,
+            body: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+              if (constraints.maxWidth < 400) {
+                return _buildTinyMobileContainer(context);
+              }
+              if (constraints.maxWidth < 600) {
+                return _buildMobileContainer(context);
+              } else {
+                return _buildNormalWebContainer(context);
+              }
+            })));
+  }
+
+  Widget _buildNormalWebContainer(context) {
+    return SingleChildScrollView(
+      // Center is a layout widget. It takes a single child and positions it
+      // in the middle of the parent.
+      child: Column(
+        // Column is also a layout widget. It takes a list of children and
+        // arranges them vertically. By default, it sizes itself to fit its
+        // children horizontally, and tries to be as tall as its parent.
+        //
+        // Invoke "debug painting" (press "p" in the console, choose the
+        // "Toggle Debug Paint" action from the Flutter Inspector in Android
+        // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+        // to see the wireframe for each widget.
+        //
+        // Column has various properties to control how it sizes itself and
+        // how it positions its children. Here we use mainAxisAlignment to
+        // center the children vertically; the main axis here is the vertical
+        // axis because Columns are vertical (the cross axis would be
+        // horizontal).
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(40),
+                child: Text(
+                  '2.1.0.1 - 105964',
+                  style: GoogleFonts.lato(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 45, 45, 45)),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 50.0),
-                  child: Image.asset(
-                    ow2Logo,
-                    height: 300,
-                    width: 600,
+              )
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 50.0),
+            child: Image.asset(
+              ow2Logo,
+              height: 300,
+              width: 600,
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.only(top: 80.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: Image.asset(
+                      loadingGif,
+                      height: 25,
+                      width: 25,
+                    ),
                   ),
+                  Text(
+                    '$activeMsg',
+                    style: GoogleFonts.overpass(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 45, 45, 45)),
+                  ),
+                ],
+              )),
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0),
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 18, horizontal: 32),
                 ),
+                onPressed: () => _warnUser(),
+                child: const Text(
+                  "CANCEL",
+                  style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                )),
+          ),
+          SizedBox(
+            child: Center(),
+            height: displayHeight(context) / 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
                 Padding(
-                    padding: const EdgeInsets.only(top: 50.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10.0),
-                          child: Image.asset(
-                            loadingGif,
-                            height: 25,
-                            width: 25,
-                          ),
-                        ),
-                        Text(
-                          '$activeMsg',
-                          style: GoogleFonts.overpass(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(255, 45, 45, 45)),
-                        ),
-                      ],
-                    )),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 18, horizontal: 32),
-                      ),
-                      onPressed: () => _warnUser(),
-                      child: const Text(
-                        "CANCEL",
-                        style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      )),
-                ),
-                const Expanded(child: Center()),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Row(
+                  padding: const EdgeInsets.only(left: 40.0),
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 40.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(200, 10),
-                                  backgroundColor: const Color(0xffede1a8),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 18, horizontal: 32),
-                                ),
-                                onPressed: () {},
-                                child: Text(
-                                  "$btn1",
-                                  style: GoogleFonts.lato(
-                                    fontSize: 12.0,
-                                  ),
-                                )),
-                            const SizedBox(
-                              height: 5,
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(200, 10),
+                            backgroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 18, horizontal: 32),
+                          ),
+                          onPressed: () {},
+                          child: Text(
+                            "$btn1",
+                            style: GoogleFonts.lato(
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.w600,
                             ),
-                            ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(200, 10),
-                                  backgroundColor: const Color(0xffede1a8),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 18, horizontal: 32),
-                                ),
-                                onPressed: () {},
-                                child: Text(
-                                  "$btn2",
-                                  style: GoogleFonts.lato(
-                                    fontSize: 12.0,
-                                  ),
-                                ))
-                          ],
-                        ),
+                          )),
+                      const SizedBox(
+                        height: 5,
                       ),
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(200, 10),
+                            backgroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 18, horizontal: 32),
+                          ),
+                          onPressed: () {},
+                          child: Text(
+                            "$btn2",
+                            style: GoogleFonts.lato(
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ))
                     ],
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(0, 10, 0, 20),
-                    child: Text(
-                      '$botMsg',
-                      style: GoogleFonts.lato(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 45, 45, 45)),
-                    ),
                   ),
                 ),
               ],
             ),
-          ), // This trailing comma makes auto-formatting nicer for build methods.
-        ));
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(0, 10, 0, 20),
+              child: Text(
+                '$botMsg',
+                style: GoogleFonts.lato(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 45, 45, 45)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMobileContainer(context) {
+    return SingleChildScrollView(
+      // Center is a layout widget. It takes a single child and positions it
+      // in the middle of the parent.
+      child: Column(
+        // Column is also a layout widget. It takes a list of children and
+        // arranges them vertically. By default, it sizes itself to fit its
+        // children horizontally, and tries to be as tall as its parent.
+        //
+        // Invoke "debug painting" (press "p" in the console, choose the
+        // "Toggle Debug Paint" action from the Flutter Inspector in Android
+        // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+        // to see the wireframe for each widget.
+        //
+        // Column has various properties to control how it sizes itself and
+        // how it positions its children. Here we use mainAxisAlignment to
+        // center the children vertically; the main axis here is the vertical
+        // axis because Columns are vertical (the cross axis would be
+        // horizontal).
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(40),
+                child: Text(
+                  '2.1.0.1 - 105964',
+                  style: GoogleFonts.lato(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 45, 45, 45)),
+                ),
+              )
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 50.0),
+            child: Image.asset(
+              ow2Logo,
+              height: 200,
+              width: 400,
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.only(top: 80.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: Image.asset(
+                      loadingGif,
+                      height: 25,
+                      width: 25,
+                    ),
+                  ),
+                  Text(
+                    '$activeMsg',
+                    style: GoogleFonts.overpass(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 45, 45, 45)),
+                  ),
+                ],
+              )),
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0),
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 18, horizontal: 32),
+                ),
+                onPressed: () => _warnUser(),
+                child: const Text(
+                  "CANCEL",
+                  style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                )),
+          ),
+          SizedBox(
+            child: Center(),
+            height: displayHeight(context) / 3,
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(0, 10, 0, 20),
+              child: Text(
+                '$botMsg',
+                style: GoogleFonts.lato(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 45, 45, 45)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTinyMobileContainer(context) {
+    return SingleChildScrollView(
+      // Center is a layout widget. It takes a single child and positions it
+      // in the middle of the parent.
+      child: Column(
+        // Column is also a layout widget. It takes a list of children and
+        // arranges them vertically. By default, it sizes itself to fit its
+        // children horizontally, and tries to be as tall as its parent.
+        //
+        // Invoke "debug painting" (press "p" in the console, choose the
+        // "Toggle Debug Paint" action from the Flutter Inspector in Android
+        // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+        // to see the wireframe for each widget.
+        //
+        // Column has various properties to control how it sizes itself and
+        // how it positions its children. Here we use mainAxisAlignment to
+        // center the children vertically; the main axis here is the vertical
+        // axis because Columns are vertical (the cross axis would be
+        // horizontal).
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(40),
+                child: Text(
+                  '2.1.0.1 - 105964',
+                  style: GoogleFonts.lato(
+                      fontSize: 12.0,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 45, 45, 45)),
+                ),
+              )
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 50.0),
+            child: Image.asset(
+              ow2Logo,
+              height: 150,
+              width: 300,
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.only(top: 60.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: Image.asset(
+                      loadingGif,
+                      height: 18,
+                      width: 18,
+                    ),
+                  ),
+                  Text(
+                    '$activeMsg',
+                    style: GoogleFonts.overpass(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 45, 45, 45)),
+                  ),
+                ],
+              )),
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0),
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 25),
+                ),
+                onPressed: () => _warnUser(),
+                child: const Text(
+                  "CANCEL",
+                  style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                )),
+          ),
+          SizedBox(
+            child: Center(),
+            height: displayHeight(context) / 3,
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(0, 10, 0, 20),
+              child: Text(
+                '$botMsg',
+                style: GoogleFonts.lato(
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 45, 45, 45)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
