@@ -4,8 +4,8 @@ const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
   "version.json": "443fa4aa0ec12f592a2a2e9e8872f55a",
-"index.html": "05c950433866e3da2ec93f33e8e31651",
-"/": "05c950433866e3da2ec93f33e8e31651",
+"index.html": "b018408a3aa59530c7eb919263b349a2",
+"/": "b018408a3aa59530c7eb919263b349a2",
 "main.dart.js": "7bf32e398454a270653fd786d9992cbe",
 "flutter.js": "f85e6fb278b0fd20c349186fb46ae36d",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
@@ -21,8 +21,6 @@ const RESOURCES = {
 "assets/shaders/ink_sparkle.frag": "9d24b3facc4c5007b0da28424874cde5",
 "assets/fonts/MaterialIcons-Regular.otf": "95db9098c58fd6db106f1116bae85a0b",
 "assets/assets/loading_gif.gif": "7fc09f7a20685bfbdccd4d80c9acab59",
-"assets/assets/images/loading_gif.gif": "7fc09f7a20685bfbdccd4d80c9acab59",
-"assets/assets/images/ow2_logo.png": "663690b1d1892452353a2135b33fbfc9",
 "assets/assets/ow2_logo.png": "663690b1d1892452353a2135b33fbfc9",
 "canvaskit/canvaskit.js": "2bc454a691c631b07a9307ac4ca47797",
 "canvaskit/profiling/canvaskit.js": "38164e5a72bdad0faa4ce740c9b8e564",
