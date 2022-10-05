@@ -7,8 +7,8 @@ void main() {
   runApp(const MyApp());
 }
 
-const ow2Logo = "/ow2_logo.png";
-const loadingGif = "/loading_gif.gif";
+const ow2Logo = "./ow2_logo.png";
+const loadingGif = "./loading_gif.gif";
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
